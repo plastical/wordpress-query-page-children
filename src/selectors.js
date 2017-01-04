@@ -2,95 +2,95 @@
  * Internal dependencies
  */
 import {
-	getSerializedPagesQuery
+	getSerializedChildsQuery
 } from './utils';
 
 /**
- * Returns a page object by its global ID.
+ * Returns a child object by its global ID.
  *
  * @param  {Object} state    Global state tree
- * @param  {String} globalId Page global ID
- * @return {Object}          Page object
+ * @param  {String} globalId Child global ID
+ * @return {Object}          Child object
  */
-export function getPage(state, globalId) {
-	return state.pages.items[globalId];
+export function getChild(state, globalId) {
+	return state.childs.items[globalId];
 }
 
 /**
- * Returns an array of pages for the pages query, or null if no pages have been
+ * Returns an array of childs for the childs query, or null if no childs have been
  * received.
  *
  * @param  {Object}  state  Global state tree
- * @param  {Object}  query  Page query object
- * @return {?Array}         Pages for the page query
+ * @param  {Object}  query  Child query object
+ * @return {?Array}         Childs for the child query
  */
-export function getPagesForQuery(state, query) {
-	const serializedQuery = getSerializedPagesQuery(query);
-	if (!state.pages.queries[serializedQuery]) {
+export function getChildsForQuery(state, query) {
+	const serializedQuery = getSerializedChildsQuery(query);
+	if (!state.childs.queries[serializedQuery]) {
 		return null;
 	}
 
-	return state.pages.queries[serializedQuery].map((globalId) => {
-		return getPage(state, globalId);
+	return state.childs.queries[serializedQuery].map((globalId) => {
+		return getChild(state, globalId);
 	}).filter(Boolean);
 }
 
 /**
- * Returns true if currently requesting pages for the pages query, or false
+ * Returns true if currently requesting childs for the childs query, or false
  * otherwise.
  *
  * @param  {Object}  state  Global state tree
- * @param  {Object}  query  Page query object
- * @return {Boolean}        Whether pages are being requested
+ * @param  {Object}  query  Child query object
+ * @return {Boolean}        Whether childs are being requested
  */
-export function isRequestingPagesForQuery(state, query) {
-	const serializedQuery = getSerializedPagesQuery(query);
-	return !!state.pages.queryRequests[serializedQuery];
+export function isRequestingChildsForQuery(state, query) {
+	const serializedQuery = getSerializedChildsQuery(query);
+	return !!state.childs.queryRequests[serializedQuery];
 }
 
 /**
- * Returns the number of total pages available for a given query.
+ * Returns the number of total childs available for a given query.
  *
  * @param  {Object}  state  Global state tree
- * @param  {Object}  query  Page query object
- * @return {int}            Number of pages
+ * @param  {Object}  query  Child query object
+ * @return {int}            Number of childs
  */
-export function getTotalPagesForQuery(state, query) {
-	const serializedQuery = getSerializedPagesQuery(query);
-	if (!state.pages.totalPages[serializedQuery]) {
+export function getTotalChildsForQuery(state, query) {
+	const serializedQuery = getSerializedChildsQuery(query);
+	if (!state.childs.totalChilds[serializedQuery]) {
 		return 1;
 	}
 
-	return parseInt(state.pages.totalPages[serializedQuery], 10);
+	return parseInt(state.childs.totalChilds[serializedQuery], 10);
 }
 
 /**
- * Returns true if a request is in progress for the specified page, or
+ * Returns true if a request is in progress for the specified child, or
  * false otherwise.
  *
  * @param  {Object}  state     Global state tree
- * @param  {String}  pageSlug  Page Slug
+ * @param  {String}  childSlug  Child Slug
  * @return {Boolean}           Whether request is in progress
  */
-export function isRequestingPage(state, pageSlug) {
-	if (!state.pages.requests) {
+export function isRequestingChild(state, childSlug) {
+	if (!state.childs.requests) {
 		return false;
 	}
 
-	return !!state.pages.requests[pageSlug];
+	return !!state.childs.requests[childSlug];
 }
 
 /**
- * Returns the Page ID for a given page slug
+ * Returns the Child ID for a given child slug
  *
  * @param  {Object}  state  Global state tree
- * @param  {string}  slug   Page slug
- * @return {int}            Page ID
+ * @param  {string}  slug   Child slug
+ * @return {int}            Child ID
  */
-export function getPageIdFromSlug(state, slug) {
-	if (!state.pages.slugs[slug]) {
+export function getChildIdFromSlug(state, slug) {
+	if (!state.childs.slugs[slug]) {
 		return false;
 	}
 
-	return state.pages.slugs[slug];
+	return state.childs.slugs[slug];
 }

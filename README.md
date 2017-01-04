@@ -1,1 +1,1 @@
-# wordpress-query-parent-pages
+# wordpress-query-page-children

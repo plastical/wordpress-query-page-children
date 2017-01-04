@@ -12,22 +12,22 @@ const api = new API({
 });
 
 import {
-	getSerializedPagesQuery
+	getSerializedChildsQuery
 } from './utils';
 
 /**
- * Page actions
+ * Child actions
  */
-export const PAGE_REQUEST = 'wordpress-redux/page/REQUEST';
-export const PAGE_REQUEST_SUCCESS = 'wordpress-redux/page/REQUEST_SUCCESS';
-export const PAGE_REQUEST_FAILURE = 'wordpress-redux/page/REQUEST_FAILURE';
-export const PAGES_RECEIVE = 'wordpress-redux/pages/RECEIVE';
-export const PAGES_REQUEST = 'wordpress-redux/pages/REQUEST';
-export const PAGES_REQUEST_SUCCESS = 'wordpress-redux/pages/REQUEST_SUCCESS';
-export const PAGES_REQUEST_FAILURE = 'wordpress-redux/pages/REQUEST_FAILURE';
+export const CHILD_REQUEST = 'wordpress-redux/child/REQUEST';
+export const CHILD_REQUEST_SUCCESS = 'wordpress-redux/child/REQUEST_SUCCESS';
+export const CHILD_REQUEST_FAILURE = 'wordpress-redux/child/REQUEST_FAILURE';
+export const CHILDS_RECEIVE = 'wordpress-redux/childs/RECEIVE';
+export const CHILDS_REQUEST = 'wordpress-redux/childs/REQUEST';
+export const CHILDS_REQUEST_SUCCESS = 'wordpress-redux/childs/REQUEST_SUCCESS';
+export const CHILDS_REQUEST_FAILURE = 'wordpress-redux/childs/REQUEST_FAILURE';
 
 /**
- * Tracks all known pages, indexed by page global ID.
+ * Tracks all known childs, indexed by child global ID.
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
@@ -35,18 +35,18 @@ export const PAGES_REQUEST_FAILURE = 'wordpress-redux/pages/REQUEST_FAILURE';
  */
 export function items(state = {}, action) {
 	switch (action.type) {
-		case PAGES_RECEIVE:
-			const pages = keyBy(action.pages, 'id');
-			return Object.assign({}, state, pages);
+		case CHILDS_RECEIVE:
+			const childs = keyBy(action.childs, 'id');
+			return Object.assign({}, state, childs);
 		default:
 			return state;
 	}
 }
 
 /**
- * Returns the updated page requests state after an action has been
- * dispatched. The state reflects a mapping of page ID to a
- * boolean reflecting whether a request for the page is in progress.
+ * Returns the updated child requests state after an action has been
+ * dispatched. The state reflects a mapping of child ID to a
+ * boolean reflecting whether a request for the child is in progress.
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
@@ -54,17 +54,17 @@ export function items(state = {}, action) {
  */
 export function requests(state = {}, action) {
 	switch (action.type) {
-		case PAGE_REQUEST:
-		case PAGE_REQUEST_SUCCESS:
-		case PAGE_REQUEST_FAILURE:
-			return Object.assign({}, state, { [action.pageSlug]: PAGE_REQUEST === action.type });
+		case CHILD_REQUEST:
+		case CHILD_REQUEST_SUCCESS:
+		case CHILD_REQUEST_FAILURE:
+			return Object.assign({}, state, { [action.childSlug]: CHILD_REQUEST === action.type });
 		default:
 			return state;
 	}
 }
 
 /**
- * Returns the updated page query requesting state after an action has been
+ * Returns the updated child query requesting state after an action has been
  * dispatched. The state reflects a mapping of serialized query to whether a
  * network request is in-progress for that query.
  *
@@ -74,12 +74,12 @@ export function requests(state = {}, action) {
  */
 export function queryRequests(state = {}, action) {
 	switch (action.type) {
-		case PAGES_REQUEST:
-		case PAGES_REQUEST_SUCCESS:
-		case PAGES_REQUEST_FAILURE:
-			const serializedQuery = getSerializedPagesQuery(action.query);
+		case CHILDS_REQUEST:
+		case CHILDS_REQUEST_SUCCESS:
+		case CHILDS_REQUEST_FAILURE:
+			const serializedQuery = getSerializedChildsQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: PAGES_REQUEST === action.type
+				[serializedQuery]: CHILDS_REQUEST === action.type
 			});
 		default:
 			return state;
@@ -87,19 +87,19 @@ export function queryRequests(state = {}, action) {
 }
 
 /**
- * Tracks the page length for a given query.
- * @todo Bring in the "without paged" util, to reduce duplication
+ * Tracks the child length for a given query.
+ * @todo Bring in the "without childd" util, to reduce duplication
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
  * @return {Object}        Updated state
  */
-export function totalPages(state = {}, action) {
+export function totalChilds(state = {}, action) {
 	switch (action.type) {
-		case PAGES_REQUEST_SUCCESS:
-			const serializedQuery = getSerializedPagesQuery(action.query);
+		case CHILDS_REQUEST_SUCCESS:
+			const serializedQuery = getSerializedChildsQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: action.totalPages
+				[serializedQuery]: action.totalChilds
 			});      
 		default:
 			return state;
@@ -107,8 +107,8 @@ export function totalPages(state = {}, action) {
 }
 
 /**
- * Returns the updated page query state after an action has been dispatched.
- * The state reflects a mapping of serialized query key to an array of page
+ * Returns the updated child query state after an action has been dispatched.
+ * The state reflects a mapping of serialized query key to an array of child
  * global IDs for the query, if a query response was successfully received.
  *
  * @param  {Object} state  Current state
@@ -117,10 +117,10 @@ export function totalPages(state = {}, action) {
  */
 export function queries(state = {}, action) {
 	switch (action.type) {
-		case PAGES_REQUEST_SUCCESS:
-			const serializedQuery = getSerializedPagesQuery(action.query);
+		case CHILDS_REQUEST_SUCCESS:
+			const serializedQuery = getSerializedChildsQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: action.pages.map((page) => page.id)
+				[serializedQuery]: action.childs.map((child) => child.id)
 			});
 		default:
 			return state;
@@ -128,7 +128,7 @@ export function queries(state = {}, action) {
 }
 
 /**
- * Tracks the slug->ID mapping for pages
+ * Tracks the slug->ID mapping for childs
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
@@ -136,16 +136,16 @@ export function queries(state = {}, action) {
  */
 export function slugs(state = {}, action) {
 	switch (action.type) {
-		case PAGE_REQUEST_SUCCESS:
+		case CHILD_REQUEST_SUCCESS:
 			return Object.assign({}, state, {
-				[action.pageSlug]: action.pageId
+				[action.childSlug]: action.childId
 			});
-		case PAGES_RECEIVE:
-			const pages = reduce(action.pages, (memo, u) => {
+		case CHILDS_RECEIVE:
+			const childs = reduce(action.childs, (memo, u) => {
 				memo[u.slug] = u.id;
 				return memo;
 			}, {});
-			return Object.assign({}, state, pages);
+			return Object.assign({}, state, childs);
 		default:
 			return state;
 	}
@@ -154,44 +154,44 @@ export function slugs(state = {}, action) {
 export default combineReducers({
 	items,
 	requests,
-	totalPages,
+	totalChilds,
 	queryRequests,
 	queries,
 	slugs
 });
 
 /**
- * Triggers a network request to fetch pages for the specified site and query.
+ * Triggers a network request to fetch childs for the specified site and query.
  *
- * @param  {String}   query  Page query
+ * @param  {String}   query  Child query
  * @return {Function}        Action thunk
  */
-export function requestPages(query = {}) {
+export function requestChilds(query = {}) {
 	return (dispatch) => {
 		dispatch({
-			type: PAGES_REQUEST,
+			type: CHILDS_REQUEST,
 			query
 		});
 
 		query._embed = true;
 
-		api.get('/wp/v2/pages', query).then(pages => {
+		api.get('/wp/v2/childs', query).then(childs => {
 			dispatch({
-				type: PAGES_RECEIVE,
-				pages
+				type: CHILDS_RECEIVE,
+				childs
 			});
-			requestPageCount('/wp/v2/pages', query).then(count => {
+			requestChildCount('/wp/v2/childs', query).then(count => {
 				dispatch({
-					type: PAGES_REQUEST_SUCCESS,
+					type: CHILDS_REQUEST_SUCCESS,
 					query,
-					totalPages: count,
-					pages
+					totalChilds: count,
+					childs
 				});
 			} );
 			return null;
 		}).catch((error) => {
 			dispatch({
-				type: PAGES_REQUEST_FAILURE,
+				type: CHILDS_REQUEST_FAILURE,
 				query,
 				error
 			});
@@ -200,46 +200,46 @@ export function requestPages(query = {}) {
 }
 
 /**
- * Triggers a network request to fetch a specific page from a site.
+ * Triggers a network request to fetch a specific child from a site.
  *
- * @param  {string}   pageSlug  Page slug
+ * @param  {string}   childSlug  Child slug
  * @return {Function}           Action thunk
  */
-export function requestPage(pageSlug) {
+export function requestChild(childSlug) {
 	return (dispatch) => {
 		dispatch({
-			type: PAGE_REQUEST,
-			pageSlug
+			type: CHILD_REQUEST,
+			childSlug
 		});
 
 		const query = {
-			slug: pageSlug,
+			slug: childSlug,
 			_embed: true,
 		};
 
-		api.get('/wp/v2/pages', query).then(data => {
-			const page = data[0];
+		api.get('/wp/v2/childs', query).then(data => {
+			const child = data[0];
 			dispatch({
-				type: PAGES_RECEIVE,
-				pages: [page]
+				type: CHILDS_RECEIVE,
+				childs: [child]
 			});
 			dispatch({
-				type: PAGE_REQUEST_SUCCESS,
-				pageId: page.id,
-				pageSlug
+				type: CHILD_REQUEST_SUCCESS,
+				childId: child.id,
+				childSlug
 			});
 			return null;
 		}).catch((error) => {
 			dispatch({
-				type: PAGE_REQUEST_FAILURE,
-				pageSlug,
+				type: CHILD_REQUEST_FAILURE,
+				childSlug,
 				error
 			});
 		});
 	};
 }
 
-function requestPageCount(url, data = null) {
+function requestChildCount(url, data = null) {
 	if (url.indexOf('http') !== 0) {
 		url = `${api.config.url}wp-json${url}`
 	}
@@ -262,6 +262,6 @@ function requestPageCount(url, data = null) {
 		body: null
 	})
 	.then(response => {
-		return parseInt(response.headers.get('X-WP-TotalPages'), 10) || 1;
+		return parseInt(response.headers.get('X-WP-TotalChilds'), 10) || 1;
 	});
 }

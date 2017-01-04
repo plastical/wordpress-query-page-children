@@ -1,10 +1,10 @@
 {
-  "name": "wordpress-query-parent-pages",
+  "name": "wordpress-query-page-children",
   "version": "0.1.0",
-  "description": "A component for fetching WordPress parent pages from the REST API.",
+  "description": "A component for fetching WordPress parent childs from the REST API.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/plastical/wordpress-query-parent-pages.git"
+    "url": "git+https://github.com/plastical/wordpress-query-page-children.git"
   },
   "keywords": [
     "react",
@@ -57,7 +57,7 @@
     "postversion": "git push && git push --tags"
   },
   "bugs": {
-    "url": "https://github.com/plastical/wordpress-query-parent-pages/issues"
+    "url": "https://github.com/plastical/wordpress-query-page-children/issues"
   },
-  "homepage": "https://github.com/plastical/wordpress-query-parent-pages#readme"
+  "homechild": "https://github.com/plastical/wordpress-query-page-children#readme"
 }
