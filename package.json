@@ -1,0 +1,25 @@
+{
+  "name": "wordpress-query-parent-pages",
+  "version": "0.1.0",
+  "description": "A component for fetching WordPress parent pages from the REST API.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha --require ./mocha-setup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plastical/wordpress-query-parent-pages.git"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "wordpress",
+    "wpapi"
+  ],
+  "author": "Ryan Vannin <ryan@plastical.com> (http://plastical.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plastical/wordpress-query-parent-pages/issues"
+  },
+  "homepage": "https://github.com/plastical/wordpress-query-parent-pages#readme"
+}
