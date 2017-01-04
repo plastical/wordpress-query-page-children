@@ -12,7 +12,7 @@ const api = new API({
 });
 
 import {
-	getSerializedChildsQuery
+	getSerializedChildrenQuery
 } from './utils';
 
 /**
@@ -21,13 +21,13 @@ import {
 export const CHILD_REQUEST = 'wordpress-redux/child/REQUEST';
 export const CHILD_REQUEST_SUCCESS = 'wordpress-redux/child/REQUEST_SUCCESS';
 export const CHILD_REQUEST_FAILURE = 'wordpress-redux/child/REQUEST_FAILURE';
-export const CHILDS_RECEIVE = 'wordpress-redux/childs/RECEIVE';
-export const CHILDS_REQUEST = 'wordpress-redux/childs/REQUEST';
-export const CHILDS_REQUEST_SUCCESS = 'wordpress-redux/childs/REQUEST_SUCCESS';
-export const CHILDS_REQUEST_FAILURE = 'wordpress-redux/childs/REQUEST_FAILURE';
+export const CHILDREN_RECEIVE = 'wordpress-redux/children/RECEIVE';
+export const CHILDREN_REQUEST = 'wordpress-redux/children/REQUEST';
+export const CHILDREN_REQUEST_SUCCESS = 'wordpress-redux/children/REQUEST_SUCCESS';
+export const CHILDREN_REQUEST_FAILURE = 'wordpress-redux/children/REQUEST_FAILURE';
 
 /**
- * Tracks all known childs, indexed by child global ID.
+ * Tracks all known children, indexed by child global ID.
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
@@ -35,9 +35,9 @@ export const CHILDS_REQUEST_FAILURE = 'wordpress-redux/childs/REQUEST_FAILURE';
  */
 export function items(state = {}, action) {
 	switch (action.type) {
-		case CHILDS_RECEIVE:
-			const childs = keyBy(action.childs, 'id');
-			return Object.assign({}, state, childs);
+		case CHILDREN_RECEIVE:
+			const children = keyBy(action.children, 'id');
+			return Object.assign({}, state, children);
 		default:
 			return state;
 	}
@@ -74,12 +74,12 @@ export function requests(state = {}, action) {
  */
 export function queryRequests(state = {}, action) {
 	switch (action.type) {
-		case CHILDS_REQUEST:
-		case CHILDS_REQUEST_SUCCESS:
-		case CHILDS_REQUEST_FAILURE:
-			const serializedQuery = getSerializedChildsQuery(action.query);
+		case CHILDREN_REQUEST:
+		case CHILDREN_REQUEST_SUCCESS:
+		case CHILDREN_REQUEST_FAILURE:
+			const serializedQuery = getSerializedChildrenQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: CHILDS_REQUEST === action.type
+				[serializedQuery]: CHILDREN_REQUEST === action.type
 			});
 		default:
 			return state;
@@ -94,12 +94,12 @@ export function queryRequests(state = {}, action) {
  * @param  {Object} action Action payload
  * @return {Object}        Updated state
  */
-export function totalChilds(state = {}, action) {
+export function totalChildren(state = {}, action) {
 	switch (action.type) {
-		case CHILDS_REQUEST_SUCCESS:
-			const serializedQuery = getSerializedChildsQuery(action.query);
+		case CHILDREN_REQUEST_SUCCESS:
+			const serializedQuery = getSerializedChildrenQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: action.totalChilds
+				[serializedQuery]: action.totalChildren
 			});      
 		default:
 			return state;
@@ -117,10 +117,10 @@ export function totalChilds(state = {}, action) {
  */
 export function queries(state = {}, action) {
 	switch (action.type) {
-		case CHILDS_REQUEST_SUCCESS:
-			const serializedQuery = getSerializedChildsQuery(action.query);
+		case CHILDREN_REQUEST_SUCCESS:
+			const serializedQuery = getSerializedChildrenQuery(action.query);
 			return Object.assign({}, state, {
-				[serializedQuery]: action.childs.map((child) => child.id)
+				[serializedQuery]: action.children.map((child) => child.id)
 			});
 		default:
 			return state;
@@ -128,7 +128,7 @@ export function queries(state = {}, action) {
 }
 
 /**
- * Tracks the slug->ID mapping for childs
+ * Tracks the slug->ID mapping for children
  *
  * @param  {Object} state  Current state
  * @param  {Object} action Action payload
@@ -140,12 +140,12 @@ export function slugs(state = {}, action) {
 			return Object.assign({}, state, {
 				[action.childSlug]: action.childId
 			});
-		case CHILDS_RECEIVE:
-			const childs = reduce(action.childs, (memo, u) => {
+		case CHILDREN_RECEIVE:
+			const children = reduce(action.children, (memo, u) => {
 				memo[u.slug] = u.id;
 				return memo;
 			}, {});
-			return Object.assign({}, state, childs);
+			return Object.assign({}, state, children);
 		default:
 			return state;
 	}
@@ -154,44 +154,44 @@ export function slugs(state = {}, action) {
 export default combineReducers({
 	items,
 	requests,
-	totalChilds,
+	totalChildren,
 	queryRequests,
 	queries,
 	slugs
 });
 
 /**
- * Triggers a network request to fetch childs for the specified site and query.
+ * Triggers a network request to fetch children for the specified site and query.
  *
  * @param  {String}   query  Child query
  * @return {Function}        Action thunk
  */
-export function requestChilds(query = {}) {
+export function requestChildren(query = {}) {
 	return (dispatch) => {
 		dispatch({
-			type: CHILDS_REQUEST,
+			type: CHILDREN_REQUEST,
 			query
 		});
 
 		query._embed = true;
 
-		api.get('/wp/v2/childs', query).then(childs => {
+		api.get('/wp/v2/children', query).then(children => {
 			dispatch({
-				type: CHILDS_RECEIVE,
-				childs
+				type: CHILDREN_RECEIVE,
+				children
 			});
-			requestChildCount('/wp/v2/childs', query).then(count => {
+			requestChildCount('/wp/v2/children', query).then(count => {
 				dispatch({
-					type: CHILDS_REQUEST_SUCCESS,
+					type: CHILDREN_REQUEST_SUCCESS,
 					query,
-					totalChilds: count,
-					childs
+					totalChildren: count,
+					children
 				});
 			} );
 			return null;
 		}).catch((error) => {
 			dispatch({
-				type: CHILDS_REQUEST_FAILURE,
+				type: CHILDREN_REQUEST_FAILURE,
 				query,
 				error
 			});
@@ -217,11 +217,11 @@ export function requestChild(childSlug) {
 			_embed: true,
 		};
 
-		api.get('/wp/v2/childs', query).then(data => {
+		api.get('/wp/v2/children', query).then(data => {
 			const child = data[0];
 			dispatch({
-				type: CHILDS_RECEIVE,
-				childs: [child]
+				type: CHILDREN_RECEIVE,
+				children: [child]
 			});
 			dispatch({
 				type: CHILD_REQUEST_SUCCESS,
@@ -262,6 +262,6 @@ function requestChildCount(url, data = null) {
 		body: null
 	})
 	.then(response => {
-		return parseInt(response.headers.get('X-WP-TotalChilds'), 10) || 1;
+		return parseInt(response.headers.get('X-WP-TotalChildren'), 10) || 1;
 	});
 }
