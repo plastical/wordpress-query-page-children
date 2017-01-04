@@ -175,12 +175,12 @@ export function requestChildren(query = {}) {
 
 		query._embed = true;
 
-		api.get('/wp/v2/children', query).then(children => {
+		api.get('/wp/v2/pages', query).then(children => {
 			dispatch({
 				type: CHILDREN_RECEIVE,
 				children
 			});
-			requestChildCount('/wp/v2/children', query).then(count => {
+			requestChildCount('/wp/v2/pages', query).then(count => {
 				dispatch({
 					type: CHILDREN_REQUEST_SUCCESS,
 					query,
@@ -217,7 +217,7 @@ export function requestChild(childSlug) {
 			_embed: true,
 		};
 
-		api.get('/wp/v2/children', query).then(data => {
+		api.get('/wp/v2/pages', query).then(data => {
 			const child = data[0];
 			dispatch({
 				type: CHILDREN_RECEIVE,

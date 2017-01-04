@@ -1,6 +1,6 @@
 {
   "name": "wordpress-query-page-children",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A component for fetching WordPress parent children from the REST API.",
   "repository": {
     "type": "git",
