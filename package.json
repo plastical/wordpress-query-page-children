@@ -15,6 +15,7 @@
   "author": "Ryan Vannin <ryan@plastical.com> (http://plastical.com)",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -52,6 +53,8 @@
     "build": "babel src --out-dir lib",
     "watch": "babel src --out-dir lib --watch",
     "lint": "eslint js --ext=js,jsx",
+    "preversion": "npm test",
+    "test": "mocha  --require ./mocha-setup",
     "version": "npm run build && git add -A lib",
     "postversion": "git push && git push --tags"
   },
